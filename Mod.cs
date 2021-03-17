@@ -1,7 +1,10 @@
 ﻿using MelonLoader;
 using RubyButtonAPI;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net;
+using UnityEngine;
 using VRC.SDKBase;
 [assembly: MelonGame("VRChat", "VRChat")]
 [assembly: MelonInfo(typeof(VRC_Anti_Crash.Mod), "VRChat Anti Crash", "3", "Kitty")]
@@ -9,10 +12,6 @@ namespace VRC_Anti_Crash
 {
     public class Mod : MelonMod
     {
-        public override void VRChat_OnUiManagerInit()
-        {
-            ui();
-        }
         public override void OnApplicationStart()
         {
             setup();
@@ -20,10 +19,32 @@ namespace VRC_Anti_Crash
         public override void OnFixedUpdate()
         {
             update();
+            if (Cache.startup_continue == false)
+            {
+                if (CheckVRCUiManager() == true)
+                {
+                    Cache.startup_continue = true;
+                    ui();
+                }
+            }
+        }
+        public static bool CheckVRCUiManager()
+        {
+            if (GameObject.Find("/UserInterface") == null)
+            {
+                return false;
+            }
+            return true;
         }
         public static void ui()
         {
-
+            using (var wc = new WebClient())
+            {
+                Cache.bundle = AssetBundle.LoadFromMemory(wc.DownloadData("https://cdn.discordapp.com/attachments/821757361671635034/821804904778694676/anti_crash"));
+            }
+            Cache.logo = Cache.bundle.LoadAsset<Sprite>("logo");
+            Cache.button = Cache.bundle.LoadAsset<Sprite>("Button");
+            new Menu.Menu();
         }
         public static void update()
         {
@@ -77,6 +98,10 @@ namespace VRC_Anti_Crash
     }
     public class Cache
     {
+        public static bool startup_continue = false;
+        public static AssetBundle bundle;
+        public static Sprite logo;
+        public static Sprite button;
         public static string path = "VRC Anti Crash/Blacklisted avatars.txt";
         public static FileSystemWatcher updateWatcher;
         public static string blacklisted_avatars;
