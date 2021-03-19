@@ -7,7 +7,7 @@ using System.Net;
 using UnityEngine;
 using VRC.SDKBase;
 [assembly: MelonGame("VRChat", "VRChat")]
-[assembly: MelonInfo(typeof(VRC_Anti_Crash.Mod), "VRChat Anti Crash", "3", "Kitty")]
+[assembly: MelonInfo(typeof(VRC_Anti_Crash.Mod), "VRChat Anti Crash", "4", "Kitty")]
 namespace VRC_Anti_Crash
 {
     public class Mod : MelonMod
