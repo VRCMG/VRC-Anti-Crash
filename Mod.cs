@@ -53,14 +53,22 @@ namespace VRC_Anti_Crash
                 try
                 {
                     var avatarManager = player.prop_MonoBehaviour2PublicObSiObStTeObBoHaObSiUnique_0;
-                    if (Cache.blacklisted_avatars.Contains(avatarManager.prop_ApiAvatar_0.id))
+                    var parent = player.prop_MonoBehaviour2PublicObSiObStTeObBoHaObSiUnique_0.GetComponentInChildren<VRC_AvatarDescriptor>(includeInactive: true).transform.parent.gameObject;
+                    var containBool = Cache.blacklisted_avatars.Contains(avatarManager.prop_ApiAvatar_0.id);
+                    if (containBool)
                     {
-                        var avatar = avatarManager.GetComponentInChildren<VRC_AvatarDescriptor>();
-                        if (avatar.gameObject.active == true)
+                        if (parent.active)
                         {
-                            avatar.gameObject.SetActive(false);
+                            parent.SetActive(false);
                         }
                     }
+                    /*else
+                    {
+                        if (!parent.active)
+                        {
+                            parent.SetActive(true);
+                        }
+                    }*/
                 }
                 catch
                 {
